@@ -58,6 +58,7 @@
       </el-form>
     </div>
     <el-card>
+ 
       <el-table
         :data="
           tableData.slice(
@@ -82,6 +83,7 @@
         <el-table-column prop="phone" label="联系电话"></el-table-column>
         <el-table-column prop="ID_type" label="证件类型"> </el-table-column>
         <el-table-column prop="ID_number" label="证件号码" width="170"></el-table-column>
+
         <el-table-column label="编辑">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="edit(scope.row)"

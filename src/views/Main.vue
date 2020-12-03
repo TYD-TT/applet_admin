@@ -154,7 +154,7 @@ export default {
   methods: {
     logout () {
       window.sessionStorage.clear()
-      this.$router.push('/login')
+      this.$router.push('/')
     },
     //   控制侧边栏的展开与收缩
     toggleCollapse() {
