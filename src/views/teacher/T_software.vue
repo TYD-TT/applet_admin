@@ -34,7 +34,7 @@
             >查询信息</el-button
           >
         </el-form-item>
-        <el-form-item style="display:none">
+        <el-form-item style="display: none">
           <el-button
             type="warning"
             icon="el-icon-edit"
@@ -92,14 +92,33 @@
         <el-table-column prop="section" label="所属部门"> </el-table-column>
         <el-table-column prop="phone" label="联系电话" width="120">
         </el-table-column>
+        <el-table-column prop="status" label="状态">
+          <template slot-scope="scope1">
+            <div>
+              <el-tag type="" size="small">
+                {{
+                  scope1.row.status == -1
+                    ? "&ensp;审&nbsp;&ensp;核"
+                    : scope1.row.status == 0
+                    ? "审核中"
+                    : "已完成"
+                }}</el-tag
+              >
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="text" label="内容" width="140">
         </el-table-column>
+
         <el-table-column prop="creat_time" label="更改时间" width="140">
         </el-table-column>
-        <el-table-column label="编辑" fixed="right" width="160">
+        <el-table-column label="编辑" fixed="right" width="240">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
+            >
+            <el-button type="success" size="small" @click="completa(scope.row)"
+              >完成</el-button
             >
             <el-button type="danger" size="small" @click="remove(scope.row)"
               >删除</el-button

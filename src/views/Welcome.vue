@@ -1,6 +1,104 @@
 <template>
   <div>
     <el-tabs type="border-card" class="tabs">
+      <el-tab-pane label="学生">
+        <div class="student">
+          <!-- 左侧申请人信息 -->
+          <div class="studentLeft">
+            <el-badge :value="student_pwd_sum" class="item">
+              <el-button size="middle" style="width: 583px">学生申请</el-button>
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <span>学生申请修改密码</span>
+                </div>
+
+                <el-table
+                  :data="stu_tableData"
+                  height="420"
+                  border
+                  stripe
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    type="index"
+                    label="#"
+                    align="center"
+                  ></el-table-column>
+                  <el-table-column
+                    prop="name"
+                    label="姓名"
+                    width="100"
+                    align="center"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop="account"
+                    label="学号"
+                    width="140"
+                    align="center"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop="creat_time"
+                    label="时间"
+                    align="center"
+                    width="120"
+                  >
+                  </el-table-column>
+                  <el-table-column prop="status" label="状态" align="center">
+                    <template slot-scope="scope">
+                      <div>
+                        <el-button
+                          type="success"
+                          size="mini"
+                          @click="aa(scope)"
+                          :disabled="scope.row.status != -1"
+                          >{{
+                            scope.row.status == -1
+                              ? "审核"
+                              : scope.row.status == 0
+                              ? "审核中"
+                              : "已完成"
+                          }}</el-button
+                        >
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-card>
+            </el-badge>
+          </div>
+          <!-- 右侧饼状图和柱状图 -->
+          <div class="studentRight">
+            <div
+              style="
+                float: left;
+                margin-left: 20px;
+                magin-top: 40px;
+                font-size: 20px;
+                font-weight: 600;
+                color: #333333;
+              "
+            >
+              每<br />天<br />的<br />申<br />请<br />情<br />况
+            </div>
+            <div class="studentRight_top">
+              <el-tabs type="border-card">
+                <el-tab-pane label="解决情况">
+                  <div class="question" id="main_top1"></div>
+                </el-tab-pane>
+                <el-tab-pane label="运行商">
+                  <div class="question" id="main_top2"></div>
+                </el-tab-pane>
+                <!-- <el-tab-pane label="男女比例">
+                  <div class="question" id="main_top3"></div>
+                </el-tab-pane> -->
+              </el-tabs>
+            </div>
+            <div class="studentRight_buttom" id="main_buttom"></div>
+          </div>
+        </div>
+      </el-tab-pane>
       <el-tab-pane label="教师">
         <div class="teacher">
           <div class="teaLeft">
@@ -471,104 +569,6 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="学生">
-        <div class="student">
-          <!-- 左侧申请人信息 -->
-          <div class="studentLeft">
-            <el-badge :value="student_pwd_sum" class="item">
-              <el-button size="middle" style="width: 583px">学生申请</el-button>
-              <el-card class="box-card">
-                <div slot="header" class="clearfix">
-                  <span>学生申请修改密码</span>
-                </div>
-
-                <el-table
-                  :data="stu_tableData"
-                  height="420"
-                  border
-                  stripe
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    type="index"
-                    label="#"
-                    align="center"
-                  ></el-table-column>
-                  <el-table-column
-                    prop="name"
-                    label="姓名"
-                    width="100"
-                    align="center"
-                  >
-                  </el-table-column>
-                  <el-table-column
-                    prop="account"
-                    label="学号"
-                    width="140"
-                    align="center"
-                  >
-                  </el-table-column>
-                  <el-table-column
-                    prop="creat_time"
-                    label="时间"
-                    align="center"
-                    width="120"
-                  >
-                  </el-table-column>
-                  <el-table-column prop="status" label="状态" align="center">
-                    <template slot-scope="scope">
-                      <div>
-                        <el-button
-                          type="success"
-                          size="mini"
-                          @click="aa(scope)"
-                          :disabled="scope.row.status != -1"
-                          >{{
-                            scope.row.status == -1
-                              ? "审核"
-                              : scope.row.status == 0
-                              ? "审核中"
-                              : "已完成"
-                          }}</el-button
-                        >
-                      </div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-card>
-            </el-badge>
-          </div>
-          <!-- 右侧饼状图和柱状图 -->
-          <div class="studentRight">
-            <div
-              style="
-                float: left;
-                margin-left: 20px;
-                magin-top: 40px;
-                font-size: 20px;
-                font-weight: 600;
-                color: #333333;
-              "
-            >
-              每<br />天<br />的<br />申<br />请<br />情<br />况
-            </div>
-            <div class="studentRight_top">
-              <el-tabs type="border-card">
-                <el-tab-pane label="解决情况">
-                  <div class="question" id="main_top1"></div>
-                </el-tab-pane>
-                <el-tab-pane label="运行商">
-                  <div class="question" id="main_top2"></div>
-                </el-tab-pane>
-                <!-- <el-tab-pane label="男女比例">
-                  <div class="question" id="main_top3"></div>
-                </el-tab-pane> -->
-              </el-tabs>
-            </div>
-            <div class="studentRight_buttom" id="main_buttom"></div>
-          </div>
-        </div>
-      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -605,7 +605,7 @@ export default {
       // 指定图表的配置项和数据
       // 修改进度
       stu_option1: {
-        title: {text: "修改进度占比"},
+        title: { text: "修改进度占比" },
         tooltip: {},
         legend: {
           data: [""],
@@ -620,7 +620,7 @@ export default {
       },
       // 运营商
       stu_option2: {
-        title: {text:"各运营商占比"},
+        title: { text: "各运营商占比" },
         tooltip: {},
         legend: {
           data: [],
@@ -796,9 +796,14 @@ export default {
   methods: {
     // 修改学生申请状态
     async aa(scope) {
-      const pwd_data = { sql_type: "tea_password", id: scope.row.id, status: scope.row.status};
+      const pwd_data = {
+        sql_type: "tea_password",
+        id: scope.row.id,
+        status: scope.row.status,
+      };
       const { data: res } = await this.$http.post(
-        `/student/edit_status1`,pwd_data
+        `/student/edit_status1`,
+        pwd_data
       );
       this.$message.success(res.message);
       this.stu_pwd_sum();
@@ -928,7 +933,11 @@ export default {
 
     // 修改教师申请状态
     async pwd(scope) {
-      const pwd_data = { sql_type: "tea_password", id: scope.row.id, status: scope.row.status};
+      const pwd_data = {
+        sql_type: "tea_password",
+        id: scope.row.id,
+        status: scope.row.status,
+      };
       const { data: res } = await this.$http.post(
         `/teacher/edit_status`,
         pwd_data
@@ -937,7 +946,11 @@ export default {
       this.tea_select();
     },
     async sfw(scope) {
-      const pwd_data = { sql_type: "tea_software", id: scope.row.id, status: scope.row.status };
+      const pwd_data = {
+        sql_type: "tea_software",
+        id: scope.row.id,
+        status: scope.row.status,
+      };
       const { data: res } = await this.$http.post(
         `/teacher/edit_status`,
         pwd_data
@@ -946,7 +959,11 @@ export default {
       this.tea_select();
     },
     async virtual(scope) {
-      const pwd_data = { sql_type: "tea_virtual", id: scope.row.id, status: scope.row.status };
+      const pwd_data = {
+        sql_type: "tea_virtual",
+        id: scope.row.id,
+        status: scope.row.status,
+      };
       const { data: res } = await this.$http.post(
         `/teacher/edit_status`,
         pwd_data
@@ -955,7 +972,11 @@ export default {
       this.tea_select();
     },
     async host(scope) {
-      const pwd_data = { sql_type: "tea_host", id: scope.row.id, status: scope.row.status };
+      const pwd_data = {
+        sql_type: "tea_host",
+        id: scope.row.id,
+        status: scope.row.status,
+      };
       const { data: res } = await this.$http.post(
         `/teacher/edit_status`,
         pwd_data
@@ -964,7 +985,11 @@ export default {
       this.tea_select();
     },
     async port(scope) {
-      const pwd_data = { sql_type: "tea_port", id: scope.row.id, status: scope.row.status };
+      const pwd_data = {
+        sql_type: "tea_port",
+        id: scope.row.id,
+        status: scope.row.status,
+      };
       const { data: res } = await this.$http.post(
         `/teacher/edit_status`,
         pwd_data
@@ -973,7 +998,11 @@ export default {
       this.tea_select();
     },
     async fault(scope) {
-      const pwd_data = { sql_type: "tea_fault", id: scope.row.id, status: scope.row.status };
+      const pwd_data = {
+        sql_type: "tea_fault",
+        id: scope.row.id,
+        status: scope.row.status,
+      };
       const { data: res } = await this.$http.post(
         `/teacher/edit_status`,
         pwd_data
@@ -1070,6 +1099,7 @@ export default {
           b1 = 0,
           c1 = 0;
         this.tea_sfwDate = res1.data;
+        console.log(this.tea_sfwDate);
         for (let i = 0; i < res1.data.length; i++) {
           if (this.tea_sfwDate[i].status == -1) {
             this.tea_sfwDate_sum++;
@@ -1097,6 +1127,7 @@ export default {
         const myChart = this.$echarts.init(
           document.getElementById("tea_sfw_top")
         );
+        console.log("1234");
         myChart.setOption(this.tea_sfw_option);
       }
       // 虚拟服务器

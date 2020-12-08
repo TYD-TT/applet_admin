@@ -34,7 +34,7 @@
             >查询信息</el-button
           >
         </el-form-item>
-        <el-form-item style="display:none">
+        <el-form-item style="display: none">
           <el-button
             type="warning"
             icon="el-icon-edit"
@@ -91,20 +91,35 @@
         </el-table-column>
         <el-table-column prop="section" label="所属部门" width="100">
         </el-table-column>
-        <el-table-column prop="cpu" label="CPU">
+        <el-table-column prop="cpu" label="CPU"> </el-table-column>
+        <el-table-column prop="status" label="状态">
+          <template slot-scope="scope1">
+            <div>
+              <el-tag type="" size="small">
+                {{
+                  scope1.row.status == -1
+                    ? "&ensp;审&nbsp;&ensp;核"
+                    : scope1.row.status == 0
+                    ? "审核中"
+                    : "已完成"
+                }}</el-tag
+              >
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column prop="rom" label="内存" width="80">
-        </el-table-column>
-        <el-table-column prop="ram" label="硬盘" width="80">
-        </el-table-column>
+        <el-table-column prop="rom" label="内存" width="80"> </el-table-column>
+        <el-table-column prop="ram" label="硬盘" width="80"> </el-table-column>
         <el-table-column prop="ios" label="预装系统" width="120">
         </el-table-column>
         <el-table-column prop="creat_time" label="申请时间" width="140">
         </el-table-column>
-        <el-table-column label="编辑" fixed="right" width="160">
+        <el-table-column label="编辑" fixed="right" width="240">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
+            >
+            <el-button type="success" size="small" @click="completa(scope.row)"
+              >完成</el-button
             >
             <el-button type="danger" size="small" @click="remove(scope.row)"
               >删除</el-button
@@ -179,46 +194,96 @@
         ref="addStu"
       >
         <el-form-item label="工号">
-          <el-input v-model="editStu.account" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.account"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="editStu.name" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.name"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="联系电话">
-          <el-input v-model="editStu.phone" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.phone"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="办公地址">
-          <el-input v-model="editStu.address" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.address"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="部门类型">
-          <el-input v-model="editStu.section_type" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.section_type"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
-          <el-form-item label="托管类型">
-          <el-input v-model="editStu.hosting_type" autocomplete="off" disabled></el-input>
+        <el-form-item label="托管类型">
+          <el-input
+            v-model="editStu.hosting_type"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="所属部门">
-          <el-input v-model="editStu.section" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.section"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="CPU">
-          <el-input v-model="editStu.cpu" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.cpu"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="内存">
-          <el-input v-model="editStu.rom" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.rom"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="硬盘">
-          <el-input v-model="editStu.ram" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.ram"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="预装系统">
-          <el-input v-model="editStu.ios" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.ios"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="申请时间">
-          <el-input v-model="editStu.creat_time" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editStu.creat_time"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogeditFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogeditFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="dialogeditFormVisible = false"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -236,8 +301,26 @@ export default {
         index: "",
         value: "",
       },
-      array1: ["工号", "姓名","联系方式", "办公地点","部门类型","所属部门", "托管类型","申请日期"],
-      array2: ["account", "name", "phone", "address","section_type","section","hosting_type", "creat_time"],
+      array1: [
+        "工号",
+        "姓名",
+        "联系方式",
+        "办公地点",
+        "部门类型",
+        "所属部门",
+        "托管类型",
+        "申请日期",
+      ],
+      array2: [
+        "account",
+        "name",
+        "phone",
+        "address",
+        "section_type",
+        "section",
+        "hosting_type",
+        "creat_time",
+      ],
       // 分页
       queryInfo: {
         quwey: "",
@@ -320,7 +403,10 @@ export default {
           for (let i = 0; i < nn.length; i++) {
             arr[i] = nn[i].id;
           }
-          const { data: res } = await this.$http.post("/teacher/del_hosting", arr);
+          const { data: res } = await this.$http.post(
+            "/teacher/del_hosting",
+            arr
+          );
           if (res.status != 201) {
             return this.$message.error("删除失败");
           }
@@ -339,7 +425,20 @@ export default {
     exportToExcel() {
       require.ensure([], () => {
         const { export_json_to_excel } = require("../../excel/Export2Excel");
-        const tHeader = ["工号", "姓名","联系方式", "办公地址","部门类型","托管类型","所属部门","CPU","内存","硬盘","预装系统", "申请日期"];
+        const tHeader = [
+          "工号",
+          "姓名",
+          "联系方式",
+          "办公地址",
+          "部门类型",
+          "托管类型",
+          "所属部门",
+          "CPU",
+          "内存",
+          "硬盘",
+          "预装系统",
+          "申请日期",
+        ];
         const filterVal = [
           "account",
           "name",
@@ -369,7 +468,10 @@ export default {
 
     //按条件查询信息
     async select_studentMessage() {
-      const { data: res } = await this.$http.post("/teacher/find_hosting", this.searchList);
+      const { data: res } = await this.$http.post(
+        "/teacher/find_hosting",
+        this.searchList
+      );
       this.tableData = [];
       this.tableData = JSON.parse(res.data);
       this.total = this.tableData.length;

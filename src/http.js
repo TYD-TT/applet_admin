@@ -2,8 +2,8 @@ import axios from 'axios'
 import Vue from 'vue'
 import router from './router/router.js'
 const http = axios.create({
-    // baseURL: 'https://tianyudong.picp.vip'
-    baseURL:'http://127.0.0.1:3000'
+    baseURL: 'https://tianyudong.picp.vip'
+    // baseURL:'http://127.0.0.1:3000'
 })
 
 http.interceptors.request.use(config=>{

@@ -34,7 +34,7 @@
             >查询信息</el-button
           >
         </el-form-item>
-        <el-form-item style="display:none">
+        <el-form-item style="display: none">
           <el-button
             type="warning"
             icon="el-icon-edit"
@@ -91,7 +91,7 @@
         <el-table-column prop="fault_message" label="故障描述" width="120">
         </el-table-column>
         <el-table-column prop="imgURL" label="故障图片" width="100">
-          <template slot-scope="scope" >
+          <template slot-scope="scope">
             <el-image
               style="width: 50px; height: 50px"
               :src="scope.row.imgurl[0]"
@@ -100,12 +100,30 @@
             </el-image>
           </template>
         </el-table-column>
+        <el-table-column prop="status" label="状态">
+          <template slot-scope="scope1">
+            <div>
+              <el-tag type="" size="small">
+                {{
+                  scope1.row.status == -1
+                    ? "&ensp;审&nbsp;&ensp;核"
+                    : scope1.row.status == 0
+                    ? "审核中"
+                    : "已完成"
+                }}</el-tag
+              >
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="creat_time" label="申请时间" width="140">
         </el-table-column>
-        <el-table-column label="编辑" fixed="right" width="160">
+        <el-table-column label="编辑" fixed="right" width="240">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
+            >
+            <el-button type="success" size="small" @click="completa(scope.row)"
+              >完成</el-button
             >
             <el-button type="danger" size="small" @click="remove(scope.row)"
               >删除</el-button
@@ -179,7 +197,7 @@
         ref="addStu"
         class="detali"
       >
-        <el-form-item label="姓名" >
+        <el-form-item label="姓名">
           <el-input v-model="editStu.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="工号">
@@ -197,23 +215,29 @@
         <el-form-item label="所在部门">
           <el-input v-model="editStu.section" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="故障描述" >
+        <el-form-item label="故障描述">
           <el-input
             type="textarea"
             :rows="2"
             v-model="editStu.fault_message"
-            style="width:480px"
+            style="width: 480px"
           ></el-input>
         </el-form-item>
         <div class="img-message">
-          <div class="img-message-block" v-for="(item,index) in editStu.imgurl" :key="index">
-            <el-image :src=item class="img"></el-image>
+          <div
+            class="img-message-block"
+            v-for="(item, index) in editStu.imgurl"
+            :key="index"
+          >
+            <el-image :src="item" class="img"></el-image>
           </div>
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogeditFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogeditFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="dialogeditFormVisible = false"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -232,13 +256,7 @@ export default {
         index: "",
         value: "",
       },
-      array1: [
-        "工号",
-        "姓名",
-        "联系方式",
-        "故障地点",
-        "申请日期",
-      ],
+      array1: ["工号", "姓名", "联系方式", "故障地点", "申请日期"],
       array2: ["account", "name", "phone", "address", "creat_time"],
       // 分页
       queryInfo: {
@@ -265,7 +283,7 @@ export default {
       const { data: res } = await this.$http.get("/teacher/fault");
       this.tableData = JSON.parse(res.data);
       for (let i = 0; i < this.tableData.length; i++) {
-        this.tableData[i].imgurl = this.tableData[i].imgURL.split('+')
+        this.tableData[i].imgurl = this.tableData[i].imgURL.split("+");
       }
       this.total = this.tableData.length;
     },
@@ -312,7 +330,10 @@ export default {
           for (let i = 0; i < nn.length; i++) {
             arr[i] = nn[i].id;
           }
-          const { data: res } = await this.$http.post("/teacher/del_fault", arr);
+          const { data: res } = await this.$http.post(
+            "/teacher/del_fault",
+            arr
+          );
           if (res.status != 201) {
             return this.$message.error("删除失败");
           }
@@ -368,11 +389,14 @@ export default {
 
     //按条件查询信息
     async select_studentMessage() {
-      const { data: res } = await this.$http.post("/teacher/find_fault", this.searchList);
+      const { data: res } = await this.$http.post(
+        "/teacher/find_fault",
+        this.searchList
+      );
       this.tableData = [];
       this.tableData = JSON.parse(res.data);
       for (let i = 0; i < this.tableData.length; i++) {
-        this.tableData[i].imgurl = this.tableData[i].imgURL.split('+')
+        this.tableData[i].imgurl = this.tableData[i].imgURL.split("+");
       }
       this.total = this.tableData.length;
       this.searchList = {};
@@ -423,23 +447,23 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.detali{
+.detali {
   display: inline-flex;
-  flex-wrap:wrap
+  flex-wrap: wrap;
 }
 .avatar {
   width: 50px;
   height: 50px;
   display: block;
 }
-.img-message{
+.img-message {
   display: inline-flex;
-  flex-wrap:wrap;
-  .img-message-block{
+  flex-wrap: wrap;
+  .img-message-block {
     width: 48%;
-    margin-left:2%;
+    margin-left: 2%;
     margin-bottom: 10px;
-    .img{
+    .img {
       width: 100%;
       height: 180px;
     }

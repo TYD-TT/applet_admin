@@ -34,7 +34,7 @@
             >查询信息</el-button
           >
         </el-form-item>
-        <el-form-item style="display:none">
+        <el-form-item style="display: none">
           <el-button
             type="warning"
             icon="el-icon-edit"
@@ -97,12 +97,29 @@
           label="证件号码"
           width="170"
         ></el-table-column>
+        <el-table-column prop="status" label="状态">
+          <template slot-scope="scope1">
+            <div>
+              <el-tag type="" size="small">
+                {{
+                scope1.row.status == -1
+                  ? "&ensp;审&nbsp;&ensp;核"
+                  : scope1.row.status == 0
+                  ? "审核中"
+                  : "已完成"
+              }}</el-tag>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="creat_time" label="更改时间" width="140">
         </el-table-column>
-        <el-table-column label="编辑" fixed="right" width="160">
+        <el-table-column label="编辑" fixed="right" width="240">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
+            >
+            <el-button type="success" size="small" @click="completa(scope.row)"
+              >完成</el-button
             >
             <el-button type="danger" size="small" @click="remove(scope.row)"
               >删除</el-button
@@ -248,8 +265,15 @@ export default {
         index: "",
         value: "",
       },
-      array1: ["工号", "姓名", "院系","密码类型", "联系方式", "修改日期"],
-      array2: ["account", "name", "department","password_type", "phone", "creat_time"],
+      array1: ["工号", "姓名", "院系", "密码类型", "联系方式", "修改日期"],
+      array2: [
+        "account",
+        "name",
+        "department",
+        "password_type",
+        "phone",
+        "creat_time",
+      ],
       // 分页
       queryInfo: {
         quwey: "",
@@ -394,7 +418,10 @@ export default {
 
     //按条件查询信息
     async select_studentMessage() {
-      const { data: res } = await this.$http.post("/teacher/find_pwd", this.searchList);
+      const { data: res } = await this.$http.post(
+        "/teacher/find_pwd",
+        this.searchList
+      );
       this.tableData = [];
       this.tableData = JSON.parse(res.data);
       this.total = this.tableData.length;
