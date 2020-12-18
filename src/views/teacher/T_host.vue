@@ -118,8 +118,11 @@
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
             >
-            <el-button type="success" size="small" @click="completa(scope.row)"
-              >完成</el-button
+            <el-button
+              type="success"
+              size="small"
+              @click="completa(scope.row)"
+              >{{ scope.row.status == "1" ? "已完成" : "完成" }}</el-button
             >
             <el-button type="danger" size="small" @click="remove(scope.row)"
               >删除</el-button
@@ -352,19 +355,6 @@ export default {
       this.dialogeditFormVisible = true;
       this.editStu = row;
     },
-    //提交所编辑的信息
-    // async editStudent() {
-    //   const { data: res } = await this.$http.post(
-    //     "/update_message",
-    //     this.editStu
-    //   );
-    //   if (res.status != 201) {
-    //     return this.$message.error("更新失败");
-    //   }
-    //   this.$message.success("更新成功");
-    //   this.dialogeditFormVisible = false;
-    //   this.selectmessage();
-    // },
     // 删除一行数据
     remove(row) {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -498,6 +488,21 @@ export default {
       this.selectmessage();
       this.addStu = {};
       this.addStu.department_major = "";
+    },
+    // 改变老师审核状态
+    async completa(scope) {
+      console.log(scope);
+      const pwd_data = {
+        sql_type: "tea_host",
+        id: scope.id,
+        status: scope.status,
+      };
+      const { data: res } = await this.$http.post(
+        `/teacher/edit_status1`,
+        pwd_data
+      );
+      this.$message.success(res.message);
+      this.selectmessage();
     },
   },
   created() {

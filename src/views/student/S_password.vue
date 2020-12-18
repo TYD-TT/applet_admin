@@ -55,6 +55,14 @@
             >批量删除</el-button
           >
         </el-form-item>
+        <el-form-item>
+          <el-button
+            type="success"
+            icon="el-icon-edit-outline"
+            @click="pwd_alter"
+            >批量完成</el-button
+          >
+        </el-form-item>
       </el-form>
     </div>
     <el-card>
@@ -102,12 +110,13 @@
             <div>
               <el-tag type="" size="small">
                 {{
-                scope1.row.status == -1
-                  ? "&ensp;审&nbsp;&ensp;核"
-                  : scope1.row.status == 0
-                  ? "审核中"
-                  : "已完成"
-              }}</el-tag>
+                  scope1.row.status == -1
+                    ? "&ensp;审&nbsp;&ensp;核"
+                    : scope1.row.status == 0
+                    ? "审核中"
+                    : "已完成"
+                }}</el-tag
+              >
             </div>
           </template>
         </el-table-column>
@@ -118,10 +127,9 @@
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
             >
-            <el-button type="success" size="small" @click="completa(scope.row)"
-              >完成</el-button
-            >
-            <el-button type="danger" size="small" @click="remove(scope.row)"
+            <el-button type="success" size="small" @click="completa(scope.row)" :disabled="scope.row.status == 1">
+              {{scope.row.status == 1 ? "已完成" : "完成"}}</el-button>
+            <el-button type="danger" size="small" @click="remove(scope.row)" 
               >删除</el-button
             >
           </template>
@@ -133,7 +141,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="queryInfo.pagenum"
-          :page-sizes="[7, 10, 15, 20]"
+          :page-sizes="[7, 20, 50, 100]"
           :page-size="queryInfo.pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
@@ -286,7 +294,7 @@ export default {
         name: "",
         ID_type: "身份证",
         ID_number: "",
-        password: "888888",
+        password: "",
         department: "",
         major: "",
         department_major: "",
@@ -829,14 +837,28 @@ export default {
       this.addStu = {};
       this.addStu.department_major = "";
     },
-    async completa(scope){
+    async completa(scope) {
       console.log(scope);
-      const pwd_data = { sql_type: "tea_password", id: scope.id, status: scope.status};
+      const pwd_data = {
+        sql_type: "student_password",
+        id: scope.id,
+        status: scope.status,
+      };
       const { data: res } = await this.$http.post(
-        `/student/edit_status1`,pwd_data
+        `/student/edit_status1`,
+        pwd_data
       );
       this.$message.success(res.message);
       this.selectmessage();
+    },
+    // 批量完成修改
+    async pwd_alter(){
+      const {data:res} = await this.$http.put('/student/pwd_alter')
+      if(res.status != 201){
+        return this.$message.error(res.message)
+      }
+      this.$message.success(res.message)
+      this.selectmessage()
     }
   },
   created() {

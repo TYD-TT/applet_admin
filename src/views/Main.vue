@@ -116,6 +116,10 @@
                   <i class="iconfont iconguzhang" style="padding-right: 5px"></i
                   >网络故障</el-menu-item
                 >
+                <el-menu-item index="/teacher/t_advisory" @click="restart">
+                  <i class="el-icon-service" style="padding-right: 5px"></i
+                  >技术支持</el-menu-item
+                >
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="3">
@@ -128,6 +132,23 @@
                 <el-menu-item index="/feedback" @click="restart">
                   <i class="el-icon-edit-outline" style="padding-right: 5px"></i
                   >意见反馈
+                </el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">
+                <i class="el-icon-edit" style="padding-right: 20px"></i
+                >文章管理
+              </template>
+              <el-menu-item-group>
+                <template slot="title">文章管理</template>
+                <el-menu-item index="/content/contentList" @click="restart">
+                  <i class="el-icon-document" style="padding-right: 5px"></i
+                  >文章列表
+                </el-menu-item>
+                <el-menu-item index="/content/contentEdit" @click="restart">
+                  <i class="el-icon-edit" style="padding-right: 5px"></i
+                  >添加文章
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
@@ -145,7 +166,7 @@ export default {
   data() {
     return {
       //   控制侧边栏的展开与收缩
-      isCollapse: false,
+      isCollapse: true,
       //   控制侧边栏展开与收缩的箭头
       arrows1: -1,
       arrows2: "el-icon-caret-left",

@@ -3,8 +3,8 @@
     <div>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>教师服务</el-breadcrumb-item>
-        <el-breadcrumb-item>网络故障</el-breadcrumb-item>
+        <el-breadcrumb-item>意见反馈</el-breadcrumb-item>
+        <el-breadcrumb-item>意见反馈</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div style="margin-top: 15px">
@@ -30,16 +30,7 @@
           <el-button
             type="primary"
             icon="el-icon-search"
-            @click="select_studentMessage"
             >查询信息</el-button
-          >
-        </el-form-item>
-        <el-form-item style="display: none">
-          <el-button
-            type="warning"
-            icon="el-icon-edit"
-            @click="dialogFormVisible = true"
-            >添加信息</el-button
           >
         </el-form-item>
         <el-form-item>
@@ -75,22 +66,10 @@
           @select="mm(selection, row)"
         >
         </el-table-column>
-        <el-table-column type="index" label="序号" width="50">
+        <el-table-column type="index" label="序号" width="180" >
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="110">
-        </el-table-column>
-        <el-table-column prop="account" label="账号" width="110">
-        </el-table-column>
-        <el-table-column prop="phone" label="联系电话" width="120">
-        </el-table-column>
-        <el-table-column prop="address" label="故障地点" width="120">
-        </el-table-column>
-        <el-table-column prop="fault_type" label="故障类型" width="120">
-        </el-table-column>
-        <el-table-column prop="section" label="所在部门"> </el-table-column>
-        <el-table-column prop="fault_message" label="故障描述" width="120">
-        </el-table-column>
-        <el-table-column prop="imgURL" label="故障图片" width="100">
+
+        <el-table-column prop="imgURL" label="故障图片" >
           <template slot-scope="scope">
             <el-image
               style="width: 50px; height: 50px"
@@ -100,33 +79,14 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态">
-          <template slot-scope="scope1">
-            <div>
-              <el-tag type="" size="small" >
-                {{
-                  scope1.row.status == -1
-                    ? "&ensp;审&nbsp;&ensp;核"
-                    : scope1.row.status == 0
-                    ? "审核中"
-                    : "已完成"
-                }}</el-tag
-              >
-            </div>
-          </template>
+        <el-table-column prop="text" label="内容">
         </el-table-column>
-        <el-table-column prop="creat_time" label="申请时间" width="140">
+        <el-table-column prop="creat_time" label="反馈时间" width="140">
         </el-table-column>
         <el-table-column label="编辑" fixed="right" width="240">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
-            >
-            <el-button
-              type="success"
-              size="small"
-              @click="completa(scope.row)" :disabled="scope.row.status == '1'"
-              >{{ scope.row.status == "1" ? "已完成" : "完成" }}</el-button
             >
             <el-button type="danger" size="small" @click="remove(scope.row)"
               >删除</el-button
@@ -161,29 +121,11 @@
         ref="addStu"
         class="detali"
       >
-        <el-form-item label="姓名">
-          <el-input v-model="editStu.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="工号">
-          <el-input v-model="editStu.account" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="editStu.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="地点">
-          <el-input v-model="editStu.address" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="故障类型">
-          <el-input v-model="editStu.fault_type" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="所在部门">
-          <el-input v-model="editStu.section" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="故障描述">
+        <el-form-item label="反馈内容">
           <el-input
             type="textarea"
             :rows="2"
-            v-model="editStu.fault_message"
+            v-model="editStu.text"
             style="width: 480px"
           ></el-input>
         </el-form-item>
@@ -208,6 +150,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -220,8 +163,8 @@ export default {
         index: "",
         value: "",
       },
-      array1: ["工号", "姓名", "联系方式", "故障地点", "申请日期"],
-      array2: ["account", "name", "phone", "address", "creat_time"],
+      array1: [],
+      array2: [],
       // 分页
       queryInfo: {
         quwey: "",
@@ -244,10 +187,11 @@ export default {
   methods: {
     // 查询信息
     async selectmessage() {
-      const { data: res } = await this.$http.get("/teacher/fault");
-      this.tableData = JSON.parse(res.data);
+      const { data: res } = await this.$http.get("/feedback");
+      this.tableData = res.data
+      console.log(this.tableData);
       for (let i = 0; i < this.tableData.length; i++) {
-        this.tableData[i].imgurl = this.tableData[i].imgURL.split("+");
+        this.tableData[i].imgurl = this.tableData[i].imgUrl.split("+");
       }
       this.total = this.tableData.length;
     },
@@ -265,7 +209,7 @@ export default {
       })
         .then(async () => {
           const { data: res } = await this.$http.delete(
-            `/teacher/del_fault/${row.id}`
+            `/feedback/${row.id}`
           );
           if (res.status != 201) {
             return this.$message.error("删除失败");
@@ -295,7 +239,7 @@ export default {
             arr[i] = nn[i].id;
           }
           const { data: res } = await this.$http.post(
-            "/teacher/del_fault",
+            "/feedbacks",
             arr
           );
           if (res.status != 201) {
@@ -317,31 +261,17 @@ export default {
       require.ensure([], () => {
         const { export_json_to_excel } = require("../../excel/Export2Excel");
         const tHeader = [
-          "工号",
-          "姓名",
-          "联系方式",
-          "开通端口办公地",
-          "部门类型",
-          "端口数量",
-          "端口通途",
-          "所在部门",
+          "工号内容",
           "申请日期",
         ];
         const filterVal = [
-          "account",
-          "name",
-          "phone",
-          "address",
-          "section_type",
-          "port_number",
-          "port_number",
-          "section",
+          "text",
           "creat_time",
         ];
         const list = this.studentList;
         console.log(list);
         const data = this.formatJson(filterVal, list);
-        export_json_to_excel(tHeader, data, "虚拟服务器开通服务列表");
+        export_json_to_excel(tHeader, data, "反馈意见");
       });
     },
     formatJson(filterVal, jsonData) {
@@ -351,20 +281,6 @@ export default {
       this.studentList = e;
     },
 
-    //按条件查询信息
-    async select_studentMessage() {
-      const { data: res } = await this.$http.post(
-        "/teacher/find_fault",
-        this.searchList
-      );
-      this.tableData = [];
-      this.tableData = JSON.parse(res.data);
-      for (let i = 0; i < this.tableData.length; i++) {
-        this.tableData[i].imgurl = this.tableData[i].imgURL.split("+");
-      }
-      this.total = this.tableData.length;
-      this.searchList = {};
-    },
 
     // 分页切换
     handleSizeChange(val) {
@@ -430,7 +346,7 @@ export default {
     margin-left: 2%;
     margin-bottom: 10px;
     .img {
-      width: 100%;
+      width: 180px;
       height: 180px;
     }
   }

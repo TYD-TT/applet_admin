@@ -610,6 +610,7 @@ export default {
         legend: {
           data: [""],
         },
+        color: ["#37A2DA", "#32C5E9", "#9FE6B8"],
         series: [
           {
             name: "",
@@ -625,6 +626,7 @@ export default {
         legend: {
           data: [],
         },
+        color: ["#e7bcf3", "#9d96f5", "#8378EA"],
         series: [
           {
             name: "",
@@ -636,19 +638,26 @@ export default {
       // 一周内的申请量
       stu_option5: {
         title: {
-          text: "一周内的申请量",
+          text: "近七天的申请量",
         },
+        color: ["#0082cf"],
         tooltip: {},
         legend: {},
         xAxis: {
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+          type: "category",
+          axisLabel: {
+            rotate: 30,
+            interval: 0,
+          },
+        },
+        dataset: {
         },
         yAxis: {},
         series: [
           {
             name: "申请人数",
-            type: "bar",
-            data: [],
+            type: "line",
+            data:[['2020-12-10','1'],['2020-12-14','2']]
           },
         ],
       },
@@ -891,41 +900,12 @@ export default {
 
     //学生柱状图
     async stu_bar_sum() {
-      // 代表周日至周六
-      const weekDay = ["7", "1", "2", "3", "4", "5", "6"];
-      var weekdata = [0, 0, 0, 0, 0, 0, 0];
+      var arr = []
       const { data: res } = await this.$http.get("/student/edit_sum");
-      if (res.status == 201) {
-        for (let i = 0; i < res.data.length; i++) {
-          // 判断一周内每天的人数
-          var time = new Date(Date.parse(res.data[i].creat_time));
-          switch (weekDay[time.getDay()]) {
-            case "1":
-              weekdata[0]++;
-              break;
-            case "2":
-              weekdata[1]++;
-              break;
-            case "3":
-              weekdata[2]++;
-              break;
-            case "4":
-              weekdata[3]++;
-              break;
-            case "5":
-              weekdata[4]++;
-              break;
-            case "6":
-              weekdata[5]++;
-              break;
-            case "7":
-              weekdata[6]++;
-              break;
-          }
-        }
-        // 给柱状图一周内每天的人数赋值
-        this.stu_option5.series[0].data = weekdata;
+      for (let i = 0; i < res.data.length; i++) {
+        arr[i] = [res.data[i]["creat_time"],res.data[i]["COUNT(*)"]]
       }
+     this.stu_option5.series[0].data=arr
       var myChart5 = this.$echarts.init(document.getElementById("main_buttom"));
       // 使用刚指定的配置项和数据显示图表。
       myChart5.setOption(this.stu_option5);
@@ -1070,13 +1050,13 @@ export default {
           }
           // 判断状态
           switch (this.tea_pwdDate[i].status) {
-            case "-1":
+            case -1:
               a++;
               break;
-            case "0":
+            case 0:
               b++;
               break;
-            case "1":
+            case 1:
               c++;
               break;
           }
@@ -1099,7 +1079,6 @@ export default {
           b1 = 0,
           c1 = 0;
         this.tea_sfwDate = res1.data;
-        console.log(this.tea_sfwDate);
         for (let i = 0; i < res1.data.length; i++) {
           if (this.tea_sfwDate[i].status == -1) {
             this.tea_sfwDate_sum++;
@@ -1108,13 +1087,13 @@ export default {
           }
           // 判断状态
           switch (this.tea_sfwDate[i].status) {
-            case "-1":
+            case -1:
               a1++;
               break;
-            case "0":
+            case 0:
               b1++;
               break;
-            case "1":
+            case 1:
               c1++;
               break;
           }
@@ -1126,8 +1105,7 @@ export default {
         }
         const myChart = this.$echarts.init(
           document.getElementById("tea_sfw_top")
-        );
-        console.log("1234");
+        )
         myChart.setOption(this.tea_sfw_option);
       }
       // 虚拟服务器
@@ -1145,13 +1123,13 @@ export default {
           }
           // 判断状态
           switch (this.tea_virtualDate[i].status) {
-            case "-1":
+            case -1:
               a2++;
               break;
-            case "0":
+            case 0:
               b2++;
               break;
-            case "1":
+            case 1:
               c2++;
               break;
           }
@@ -1181,13 +1159,13 @@ export default {
           }
           // 判断状态
           switch (this.tea_hostDate[i].status) {
-            case "-1":
+            case -1:
               a3++;
               break;
-            case "0":
+            case 0:
               b3++;
               break;
-            case "1":
+            case 1:
               c3++;
               break;
           }
@@ -1217,13 +1195,13 @@ export default {
           }
           // 判断状态
           switch (this.tea_portDate[i].status) {
-            case "-1":
+            case -1:
               a4++;
               break;
-            case "0":
+            case 0:
               b4++;
               break;
-            case "1":
+            case 1:
               c4++;
               break;
           }
@@ -1253,13 +1231,13 @@ export default {
           }
           // 判断状态
           switch (this.tea_faultDate[i].status) {
-            case "-1":
+            case -1:
               a5++;
               break;
-            case "0":
+            case 0:
               b5++;
               break;
-            case "1":
+            case 1:
               c5++;
               break;
           }
@@ -1288,7 +1266,7 @@ export default {
           // 判断一周内每天的人数
           var time = new Date(Date.parse(res.data[i].creat_time));
           switch (weekDay[time.getDay()]) {
-            case "1":
+            case 1:
               weekdata[0]++;
               break;
             case "2":

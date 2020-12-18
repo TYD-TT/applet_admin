@@ -281,19 +281,6 @@ export default {
       this.editStu = row;
       this.value.unshift(row.department, row.major);
     },
-    //提交所编辑的信息
-    // async editStudent() {
-    //   const { data: res } = await this.$http.post(
-    //     "/update_message",
-    //     this.editStu
-    //   );
-    //   if (res.status != 201) {
-    //     return this.$message.error("更新失败");
-    //   }
-    //   this.$message.success("更新成功");
-    //   this.dialogeditFormVisible = false;
-    //   this.selectmessage();
-    // },
     // 删除一行数据
     remove(row) {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -407,6 +394,20 @@ export default {
       this.selectmessage();
       this.addStu = {};
       this.addStu.department_major = "";
+    },
+        async completa(scope) {
+      console.log(scope);
+      const pwd_data = {
+        sql_type: "tea_virtual",
+        id: scope.id,
+        status: scope.status,
+      };
+      const { data: res } = await this.$http.post(
+        `/teacher/edit_status1`,
+        pwd_data
+      );
+      this.$message.success(res.message);
+      this.selectmessage();
     },
   },
   created() {

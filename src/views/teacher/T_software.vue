@@ -112,17 +112,22 @@
 
         <el-table-column prop="creat_time" label="更改时间" width="140">
         </el-table-column>
-        <el-table-column label="编辑" fixed="right" width="240">
+        <el-table-column label="编辑" fixed="right" width="300">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="edit(scope.row)"
               >详情</el-button
             >
-            <el-button type="success" size="small" @click="completa(scope.row)"
-              >完成</el-button
+            <el-button
+              type="success"
+              size="small"
+              @click="completa(scope.row)"
+              :disabled="scope.row.status == '1'"
+              >{{ scope.row.status == "1" ? "已完成" : "完成" }}</el-button
             >
             <el-button type="danger" size="small" @click="remove(scope.row)"
               >删除</el-button
             >
+            <el-button type="success" size="small" @click="restore(scope.row) ">回复</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -132,52 +137,40 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="queryInfo.pagenum"
-          :page-sizes="[7, 10, 15, 20]"
+          :page-sizes="[10, 20, 30, 50]"
           :page-size="queryInfo.pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
         ></el-pagination>
       </div>
     </el-card>
-    <!-- 添加学生按钮会话框 -->
+<!-- 回复邮件会话框 -->
     <el-dialog
-      title="添加信息"
+      title="回复邮件"
       :visible.sync="dialogFormVisible"
-      width="330px"
-      top="20px"
+      width="530px"
+      top="160px"
     >
       <el-form
-        :model="addStu"
+        :model="teaEmail"
         label-position="right"
         label-width="75px"
-        ref="addStu"
+        ref="teaEmail"
       >
-        <el-form-item label="工号">
-          <el-input v-model="addStu.account" autocomplete="off"></el-input>
+        <el-form-item label="收件人">
+          <el-input v-model="teaEmail.account" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="addStu.password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="addStu.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="addStu.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证号">
-          <el-input v-model="addStu.ID_number" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="院系专业">
-          <el-cascader v-model="value" :options="options"></el-cascader>
-        </el-form-item>
-        <el-form-item label="年级">
-          <el-input v-model="addStu.class" autocomplete="off"></el-input>
+        <el-form-item label="邮件内容">
+          <el-input
+            type="textarea"
+            :rows="5"
+            v-model="teaEmail.text"
+          ></el-input>
         </el-form-item>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addStudent()">确 定</el-button>
+        <el-button type="primary" @click="sendEmail()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -311,16 +304,10 @@ export default {
       total: 0,
       dialogFormVisible: false,
       dialogeditFormVisible: false,
-      addStu: {
-        class: "",
+      teaEmail: {
         account: "",
-        name: "",
-        ID_type: "身份证",
-        ID_number: "",
-        password: "888888",
-        department: "",
-        major: "",
-        phone: "",
+        text:''
+
       },
       value: [],
       options: [
@@ -716,19 +703,21 @@ export default {
       this.value.unshift(row.department, row.major);
       this.editStu.department_major = this.value.join("-");
     },
-    //提交所编辑的信息
-    // async editStudent() {
-    //   const { data: res } = await this.$http.post(
-    //     "/update_message",
-    //     this.editStu
-    //   );
-    //   if (res.status != 201) {
-    //     return this.$message.error("更新失败");
-    //   }
-    //   this.$message.success("更新成功");
-    //   this.dialogeditFormVisible = false;
-    //   this.selectmessage();
-    // },
+    // 点击回复
+    restore(row){
+      this.dialogFormVisible = true
+      this.teaEmail.account = row.account
+    },
+
+    // 发送邮件
+    async sendEmail() {
+      const { data: res } = await this.$http.post("/email/user", this.teaEmail);
+      if (res.status != 201) {
+        return this.$message.error("发送失败");
+      }
+      this.$message.success("发送成功");
+      this.dialogFormVisible = false;
+    },
     // 删除一行数据
     remove(row) {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -844,20 +833,20 @@ export default {
     handleCurrentChange(val) {
       this.queryInfo.pagenum = val;
     },
-
-    // 添加信息
-    // async addStudent() {
-    //   this.addStu.department_major = this.value.join("-");
-    //   const { data: res } = await this.$http.post("/add_message", this.addStu);
-    //   if (res.status != 201) {
-    //     return this.$message.error("添加失败");
-    //   }
-    //   this.$message.success("添加成功");
-    //   this.dialogFormVisible = false;
-    //   this.selectmessage();
-    //   this.addStu = {};
-    //   this.addStu.department_major = "";
-    // },
+    async completa(scope) {
+      console.log(scope);
+      const pwd_data = {
+        sql_type: "tea_software",
+        id: scope.id,
+        status: scope.status,
+      };
+      const { data: res } = await this.$http.post(
+        `/teacher/edit_status1`,
+        pwd_data
+      );
+      this.$message.success(res.message);
+      this.selectmessage();
+    },
   },
   created() {
     this.selectmessage();
